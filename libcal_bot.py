@@ -49,9 +49,27 @@ start_times = [time.strip() for time in start_times_str.split(',')]
 
 # Define functions for interacting with the website
 def select_library(library_name):
-    # Locate and click on the library selection element
-    library_select = driver.find_element(By.XPATH, "//your-library-xpath")
-    library_select.click()
+    # Define a dictionary to map library names to their corresponding XPath expressions
+    library_xpath_mapping = {
+        "Earth Sciences & Map Seminar Room": '//*[@id="s-lc-content-eqlist-67826"]/div/ul[1]/li/a',
+        "East Asian Library Study Rooms": '//*[@id="s-lc-content-eqlist-67826"]/div/ul[2]/li/a',
+        "Environmental Design Library Group Study Room": '//*[@id="s-lc-content-eqlist-67826"]/div/ul[3]/li/a',
+        "IGS Library (Matsui Center) Study Room": '//*[@id="s-lc-content-eqlist-67826"]/div/ul[4]/li/a',
+        "Gardner Main Stacks Study Rooms": '//*[@id="s-lc-content-eqlist-67826"]/div/ul[5]/li/a',
+        "Moffit All Categories": '//*[@id="s-lc-content-eqlist-67826"]/div/ul[6]/li[1]/a'
+    }
+
+    # Check if the provided library name exists in the mapping
+    if library_name in library_xpath_mapping:
+        # Get the corresponding XPath expression for the selected library
+        library_xpath = library_xpath_mapping[library_name]
+        
+        # Locate and click on the library selection element
+        library_select = driver.find_element(By.XPATH, library_xpath)
+        library_select.click()
+    else:
+        print(f"Library '{library_name}' not found in the mapping.")
+
 
 def select_date(date):
     # Locate and interact with the date selection element
@@ -72,7 +90,34 @@ def submit_booking():
     submit_button = driver.find_element(By.XPATH, "//your-submit-button-xpath")
     submit_button.click()
 
-select_library(library_name)
+# Prompt the user to choose a library
+print("Choose a library:")
+print("1. Earth Sciences & Map Seminar Room")
+print("2. East Asian Library Study Rooms")
+print("3. Environmental Design Library Group Study Room")
+print("4. IGS Library (Matsui Center) Study Room")
+print("5. Gardner Main Stacks Study Rooms")
+print("6. All Categories")
+
+# Get the user's choice
+user_choice = input("Enter the number of your choice: ")
+
+# Map user's choice to the corresponding library name
+library_choices = {
+    "1": "Earth Sciences & Map Seminar Room",
+    "2": "East Asian Library Study Rooms",
+    "3": "Environmental Design Library Group Study Room",
+    "4": "IGS Library (Matsui Center) Study Room",
+    "5": "Gardner Main Stacks Study Rooms",
+    "6": "Moffit All Categories"
+}
+
+if user_choice in library_choices:
+    selected_library = library_choices[user_choice]
+    select_library(selected_library)  # Call the select_library function with the chosen library
+else:
+    print("Invalid choice. Please enter a valid number.")
+
 select_date(date)
 select_time_slots(start_times)
 submit_booking()
